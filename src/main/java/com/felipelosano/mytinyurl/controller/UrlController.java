@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
@@ -38,9 +39,10 @@ public class UrlController {
           @ApiResponse(responseCode = "400", description = "Request error"),
           @ApiResponse(responseCode = "500", description = "Internal error")
   })
-  public ResponseEntity<UrlResponseDTO> getByShortUrl(@PathVariable String shortUrl) {
+  public RedirectView getByShortUrl(@PathVariable String shortUrl) {
     UrlResponseDTO response = urlService.findByShortUrl(shortUrl);
-    return ResponseEntity.status(HttpStatus.OK).body(response);
+    return new RedirectView(response.longUrl());
+//    return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
   @PostMapping
