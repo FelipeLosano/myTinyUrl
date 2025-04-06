@@ -26,7 +26,7 @@ public class UrlService {
     log.info("Find all urls");
 
     return urlRepository.findAll().stream()
-            .map(dto -> new UrlResponseDTO(dto.getId(), dto.getLongUrl(), dto.getShortUrl(), dto.getCreatedAt()))
+            .map(dto -> new UrlResponseDTO(dto.getId(), dto.getLongUrl(), dto.getShortUrl(), dto.getCreatedAt(), dto.getAccesses()))
             .toList();
   }
 
@@ -40,8 +40,12 @@ public class UrlService {
     }
 
     log.info("Url found {}", responseUrl);
+    log.info("Increasing accesses count {}", responseUrl.getAccesses());
+    responseUrl.setAccesses(responseUrl.getAccesses() + 1);
+    urlRepository.save(responseUrl);
+    log.info("Url accesses count updated {}", responseUrl.getAccesses());
     return new UrlResponseDTO(responseUrl.getId(), responseUrl.getLongUrl(), responseUrl.getShortUrl(),
-            responseUrl.getCreatedAt());
+            responseUrl.getCreatedAt(), responseUrl.getAccesses());
   }
 
   public UrlResponseDTO save(UrlRequestDTO dto) {
@@ -57,7 +61,7 @@ public class UrlService {
     }
 
     log.info("Url saved {}", url);
-    return new UrlResponseDTO(url.getId(), url.getLongUrl(), url.getShortUrl(), url.getCreatedAt());
+    return new UrlResponseDTO(url.getId(), url.getLongUrl(), url.getShortUrl(), url.getCreatedAt(), url.getAccesses());
   }
 
   public UrlResponseDTO update(UrlRequestDTO dto, Long id) {
@@ -74,7 +78,7 @@ public class UrlService {
     Url response = urlRepository.save(url);
 
     log.info("Url updated {}", response);
-    return new UrlResponseDTO(response.getId(), response.getLongUrl(), response.getShortUrl(), response.getCreatedAt());
+    return new UrlResponseDTO(response.getId(), response.getLongUrl(), response.getShortUrl(), response.getCreatedAt(), response.getAccesses());
   }
 
   public void delete(Long id) {
